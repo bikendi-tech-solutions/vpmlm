@@ -669,7 +669,7 @@ $membership_rule = $wpdb->get_results("SELECT * FROM $memRuleTable WHERE user_id
 if($membership_rule != NULL && !empty($membership_rule)){
   #Get Total transaction_number
 $transNo =  intval($membership_rule[0]->transaction_number) + 1;
-$transAmount =  intval($membership_rule[0]->transaction_amount) + $amount;
+$transAmount =  floatval($membership_rule[0]->transaction_amount) + $amount;
 $start_count = $membership_rule[0]->start_count;
 $one_month_after = date("Y-m-d",strtotime($start_count."+1 month"));
 $current_date = date("Y-m-d");
@@ -747,10 +747,12 @@ if(empty($mlm_for)){
 	
 	//update total amount of successful transactions consumed
 	$cur_suc_trans_amt = vp_getuser($id, "vp_tot_trans_amt",true);
-	$tot_suc_trans_amt = intval($cur_suc_trans_amt ) + intval($amount);
+	$tot_suc_trans_amt = floatval($cur_suc_trans_amt ) + floatval($amount);
 	vp_updateuser($id, "vp_tot_trans_amt", $tot_suc_trans_amt);
 
 	$tot = $bal - $amount;
+
+
 
 
 if(strtolower($plan) != "custome" && vp_getoption("discount_method") != "direct"  && isset($level) && isset($level[0]->total_level)){
@@ -784,6 +786,8 @@ $current_level_pv = "level_".$lev;
 //$error .= "\nCurrent Level PV is $current_level_pv";
 
 if(empty($mlm_for)){
+//  error_log("for airtime",0);
+//  error_log("current level promo for airtime is ".$current_level,0);
 $discount = floatval($level[0]->{$current_level});
 $current_level_pv_bonus = floatval($level[0]->{$current_level_pv."_pv"});
 }
@@ -807,19 +811,21 @@ else{
     $current_level_pv_bonus = 0;   
 }
 
-$give_away = (intval($amount) * $discount) / 100;
+$give_away = (floatval($amountv) * $discount) / 100;
 //$error .= "\nAmount is $amount and Discount is $discount ";
 //$error .= "\nGiveaway is $give_away ";
 
+//error_log("Giveaway is ".$give_away." for user with is $the_user",0);
 
 
 if(vp_getuser($the_user,"vr_plan",true) != "custome" && $lev == 1 && $the_user != "0" && $the_user != "false"){
 
 $curr_dir_trans_bonus = vp_getuser($the_user, "vp_tot_dir_trans", true);
-$add_to_direct_transb = intval($curr_dir_trans_bonus) + intval($give_away);
+$add_to_direct_transb = floatval($curr_dir_trans_bonus) + floatval($give_away);
 //$error .= "\nAdded is $add_to_direct_transb ";
 vp_updateuser($the_user, "vp_tot_dir_trans", $add_to_direct_transb);
 
+//error_log("Bonus is current of $curr_dir_trans_bonus + $give_away = $add_to_direct_transb for $the_user",0);
 
 
 $usrs_table = $wpdb->get_results("SELECT * FROM $usrs WHERE ID = $the_user");
@@ -834,7 +840,7 @@ else{}
 }
 elseif(vp_getuser($the_user,"vr_plan",true) != "custome" && $lev == 2 && $the_user != "0" && $the_user != "false"){
 $curr_indir_trans_bonus = vp_getuser($the_user, "vp_tot_indir_trans", true);
-$add_to_indirect_transb = intval($curr_indir_trans_bonus) + intval($give_away);
+$add_to_indirect_transb = floatval($curr_indir_trans_bonus) + floatval($give_away);
 vp_updateuser($the_user, "vp_tot_indir_trans", $add_to_indirect_transb);
 
 $usrs_table = $wpdb->get_results("SELECT * FROM $usrs WHERE ID = $the_user");
@@ -848,7 +854,7 @@ else{}
 }
 elseif(vp_getuser($the_user,"vr_plan",true) != "custome" && $lev == 3  && $the_user != "0" && $the_user != "false"){
 $curr_indir_trans_bonus3 = vp_getuser($the_user, "vp_tot_indir_trans3", true);
-$add_to_indirect_transb3 = intval($curr_indir_trans_bonus3) + intval($give_away);
+$add_to_indirect_transb3 = floatval($curr_indir_trans_bonus3) + floatval($give_away);
 vp_updateuser($the_user, "vp_tot_indir_trans3", $add_to_indirect_transb3);
 
 
@@ -864,7 +870,7 @@ else{}
 }
 elseif(vp_getuser($the_user,"vr_plan",true) != "custome" && $lev != 3 && $lev != 2 && $lev != 1  && $the_user != "0" && $the_user != "false"){
 $other_in = vp_getuser($the_user, "vp_tot_indir_trans3", true);// this one for other levels that are above level 3 but part of persons ref
-$add_to_other_in = intval($other_in ) + intval($give_away);
+$add_to_other_in = floatval($other_in ) + floatval($give_away);
 vp_updateuser($the_user, "vp_tot_indir_trans3", $add_to_other_in);
 
 $usrs_table = $wpdb->get_results("SELECT * FROM $usrs WHERE ID = $the_user");
@@ -914,7 +920,7 @@ function vp_after_function_api(){
 	
 	//update total amount of successful transactions consumed
 	$cur_suc_trans_amt = vp_getuser($id, "vp_tot_trans_amt",true);
-	$tot_suc_trans_amt = intval($cur_suc_trans_amt ) + intval($amount);
+	$tot_suc_trans_amt = floatval($cur_suc_trans_amt ) + floatval($amount);
 	vp_updateuser($id, "vp_tot_trans_amt", $tot_suc_trans_amt);
 
 	$tot = $bal - $amount;
@@ -945,29 +951,29 @@ for($lev = 1; $lev <= $total_level; $lev++){
 $current_level = "level_".$lev;
 $discount = floatval($level[0]->{$current_level});
 
-$give_away = (intval($amount) * $discount) / 100;
+$give_away = (floatval($amount) * $discount) / 100;
 
 
 if(vp_getuser($the_user,"vr_plan",true) != "custome" && $lev == 1 && $the_user != "0" && $the_user != "false"){
 
 $curr_dir_trans_bonus = vp_getuser($the_user, "vp_tot_dir_trans", true);
-$add_to_direct_transb = intval($curr_dir_trans_bonus) + intval($give_away);
+$add_to_direct_transb = floatval($curr_dir_trans_bonus) + floatval($give_away);
 vp_updateuser($the_user, "vp_tot_dir_trans", $add_to_direct_transb);
 	
 }
 elseif(vp_getuser($the_user,"vr_plan",true) != "custome" && $lev == 2 && $the_user != "0" && $the_user != "false"){
 $curr_indir_trans_bonus = vp_getuser($the_user, "vp_tot_indir_trans", true);
-$add_to_indirect_transb = intval($curr_indir_trans_bonus) + intval($give_away);
+$add_to_indirect_transb = floatval($curr_indir_trans_bonus) + floatval($give_away);
 vp_updateuser($the_user, "vp_tot_indir_trans", $add_to_indirect_transb);
 }
 elseif(vp_getuser($the_user,"vr_plan",true) != "custome" && $lev == 3  && $the_user != "0" && $the_user != "false"){
 $curr_indir_trans_bonus3 = vp_getuser($the_user, "vp_tot_indir_trans3", true);
-$add_to_indirect_transb3 = intval($curr_indir_trans_bonus3) + intval($give_away);
+$add_to_indirect_transb3 = floatval($curr_indir_trans_bonus3) + floatval($give_away);
 vp_updateuser($the_user, "vp_tot_indir_trans3", $add_to_indirect_transb3);
 }
 elseif(vp_getuser($the_user,"vr_plan",true) != "custome" && $lev != 3 && $lev != 2 && $lev != 1  && $the_user != "0" && $the_user != "false"){
 $other_in = vp_getuser($the_user, "vp_tot_indir_trans3", true);// this one for other levels that are above level 3 but part of persons ref
-$add_to_other_in = intval($other_in ) + intval($give_away);
+$add_to_other_in = floatval($other_in ) + floatval($give_away);
 vp_updateuser($the_user, "vp_tot_indir_trans3", $add_to_other_in);
 }
 else{
