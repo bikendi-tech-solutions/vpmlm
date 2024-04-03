@@ -3,7 +3,7 @@
 *Plugin Name: VP MLM
 *Plugin URI: https://vtupress.com
 *Description: Add Multi-Level-Marketing To Vtupress
-*Version: 2.2.7
+*Version: 2.2.8
 *Author: Akor Victor
 *Author URI: https://facebook.com/akor.victor.39
 */
@@ -801,8 +801,8 @@ $current_level_pv = "level_".$lev;
 //$error .= "\nCurrent Level PV is $current_level_pv";
 
 if(empty($mlm_for)){
-//  error_log("for airtime",0);
-//  error_log("current level promo for airtime is ".$current_level,0);
+ //error_log("for airtime",0);
+ //error_log("current level promo for airtime is ".$current_level,0);
 $discount = floatval($level[0]->{$current_level});
 $current_level_pv_bonus = floatval($level[0]->{$current_level_pv."_pv"});
 }
@@ -830,7 +830,7 @@ $give_away = (floatval($realAmt) * $discount) / 100;
 //$error .= "\nAmount is $amount and Discount is $discount ";
 //$error .= "\nGiveaway is $give_away ";
 
-//error_log("Giveaway is ".$give_away." for user with is $the_user",0);
+//error_log("Giveaway is (real of $realAmt) * $discount / 100 =  ".$give_away." for user with is $the_user",0);
 
 
 if(vp_getuser($the_user,"vr_plan",true) != "custome" && $lev == 1 && $the_user != "0" && $the_user != "false"){
