@@ -3,7 +3,7 @@
 *Plugin Name: VP MLM
 *Plugin URI: https://vtupress.com
 *Description: Add Multi-Level-Marketing To Vtupress
-*Version: 2.2.5
+*Version: 2.2.7
 *Author: Akor Victor
 *Author URI: https://facebook.com/akor.victor.39
 */
@@ -62,6 +62,22 @@ function vp_addoption(){
 	}
 
 }
+
+
+
+require __DIR__.'/plugin-update-checker/plugin-update-checker.php';
+use YahnisElsts\PluginUpdateChecker\v5\PucFactory;
+
+$myUpdateChecker = PucFactory::buildUpdateChecker(
+	'https://github.com/bikendi-tech-solutions/vpmlm',
+	__FILE__,
+	'vpmlm'
+);
+//Set the branch that contains the stable release.
+$myUpdateChecker->setBranch('main');
+
+$myUpdateChecker->getVcsApi()->enableReleaseAssets();
+
 
 
 if(vp_getoption('siteurl') != "https://vtupress.com" || vp_getoption('siteurl') != "vtupress.com" ){
@@ -657,11 +673,11 @@ add_action("vp_after_api", "vp_after_function_api");
 
 function vp_after_function(){
 	
-	global $wpdb, $plan,$level,$amountv,$sec,$mlm_for;
+	global $wpdb, $plan,$level,$amountv,$sec,$mlm_for,$realAmt;
 #$level = data of current plam
 #$plan = my current plan
 $id = get_current_user_id();
-$amount = $amountv;
+$amount = $realAmt;
 
 $memRuleTable = $wpdb->prefix."vp_membership_rule_stats";
 $membership_rule = $wpdb->get_results("SELECT * FROM $memRuleTable WHERE user_id = '$id' ORDER BY ID DESC LIMIT 1");
@@ -811,7 +827,7 @@ else{
     $current_level_pv_bonus = 0;   
 }
 
-$give_away = (floatval($amountv) * $discount) / 100;
+$give_away = (floatval($realAmt) * $discount) / 100;
 //$error .= "\nAmount is $amount and Discount is $discount ";
 //$error .= "\nGiveaway is $give_away ";
 
