@@ -3,7 +3,7 @@
 *Plugin Name: VP MLM
 *Plugin URI: https://vtupress.com
 *Description: Add Multi-Level-Marketing To Vtupress
-*Version: 2.2.8
+*Version: 2.2.9
 *Author: Akor Victor
 *Author URI: https://facebook.com/akor.victor.39
 */
@@ -676,7 +676,9 @@ function vp_after_function(){
 #$level = data of current plam
 #$plan = my current plan
 $id = get_current_user_id();
-$amount = $realAmt;
+$amount = apply_filters("alter_amount",$realAmt);
+
+
 
 $memRuleTable = $wpdb->prefix."vp_membership_rule_stats";
 $membership_rule = $wpdb->get_results("SELECT * FROM $memRuleTable WHERE user_id = '$id' ORDER BY ID DESC LIMIT 1");
