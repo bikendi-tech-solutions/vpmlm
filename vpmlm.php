@@ -3,7 +3,7 @@
 *Plugin Name: VP MLM
 *Plugin URI: https://vtupress.com
 *Description: Add Multi-Level-Marketing To Vtupress
-*Version: 2.3.0
+*Version: 2.3.1
 *Author: Akor Victor
 *Author URI: https://facebook.com/akor.victor.39
 */
@@ -74,6 +74,8 @@ $myUpdateChecker = PucFactory::buildUpdateChecker(
 );
 //Set the branch that contains the stable release.
 $myUpdateChecker->setBranch('main');
+
+$myUpdateChecker->setAuthentication('your-token-here');
 
 $myUpdateChecker->getVcsApi()->enableReleaseAssets();
 
