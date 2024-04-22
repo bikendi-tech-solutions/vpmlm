@@ -3,7 +3,7 @@
 *Plugin Name: VP MLM
 *Plugin URI: https://vtupress.com
 *Description: Add Multi-Level-Marketing To Vtupress
-*Version: 2.3.1
+*Version: 2.3.2
 *Author: Akor Victor
 *Author URI: https://facebook.com/akor.victor.39
 */
@@ -678,6 +678,15 @@ function vp_after_function(){
 #$level = data of current plam
 #$plan = my current plan
 $id = get_current_user_id();
+
+
+$now_bal = vp_getuser($id,"vp_bal",true);
+
+if($now_bal != $_COOKIE["last_bal"]){
+  setcookie("last_bal", 0, time() + (30 * 24 * 60 * 60), "/");
+}
+
+
 $amount = apply_filters("alter_amount",$realAmt);
 
 
