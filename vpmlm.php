@@ -3,7 +3,7 @@
 *Plugin Name: VP MLM
 *Plugin URI: https://vtupress.com
 *Description: Add Multi-Level-Marketing To Vtupress
-*Version: 2.3.2
+*Version: 2.3.3
 *Author: Akor Victor
 *Author URI: https://facebook.com/akor.victor.39
 */
@@ -724,7 +724,9 @@ $wpdb->insert($memRuleTable,$data);
 
 
 
- // print_r($level);
+if (is_object($level)) {
+     $level = [$level];
+}
 
 	
 	//$error = "\nMLM for";
